@@ -88,5 +88,20 @@ func execCommands(cmds []string) ([]string, error) {
 
 // BulkDo is entry of bulkdo
 func BulkDo(cmdTemplate io.Reader, params io.Reader) ([]string, error) {
-	return nil, nil
+	items, itemsErr := readItems(params)
+	if itemsErr != nil {
+		return nil, itemsErr
+	}
+
+	cmds, parseErr := parseCommands(cmdTemplate, items)
+	if parseErr != nil {
+		return nil, parseErr
+	}
+
+	outs, exeErr := execCommands(cmds)
+	if exeErr != nil {
+		return nil, exeErr
+	}
+
+	return outs, nil
 }
